@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import { useTheme } from "next-themes"
 import { Moon, Sun } from "lucide-react"
 
@@ -35,14 +35,54 @@ export function Nav() {
               >
                 Categories
               </Link>
-              {session?.user?.role === "ADMIN" && (
+              {session?.user ? (
+                <>
+                  <Link
+                    href="/profile"
+                    className={cn(
+                      "mx-4 text-sm font-medium transition-colors hover:text-primary"
+                    )}
+                  >
+                    <div className="flex items-center space-x-2">
+                      {session.user.image ? (
+                        <img
+                          src={session.user.image}
+                          alt={session.user.name || "User avatar"}
+                          className="h-8 w-8 rounded-full"
+                        />
+                      ) : (
+                        <div className="h-8 w-8 rounded-full bg-gray-200" />
+                      )}
+                      <span className="text-sm font-medium">
+                        {session.user.name || "User"}
+                      </span>
+                    </div>
+                  </Link>
+                  <Link
+                    href="/dashboard"
+                    className={cn(
+                      "mx-4 text-sm font-medium transition-colors hover:text-primary"
+                    )}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/api/auth/signout"
+                    className={cn(
+                      "text-sm font-medium text-red-600 transition-colors hover:text-red-700"
+                    )}
+                  >
+                    Sign Out
+                  </Link>
+                </>
+              ) : (
                 <Link
-                  href="/dashboard"
+                  href="/api/auth/signin"
                   className={cn(
                     "mx-4 text-sm font-medium transition-colors hover:text-primary"
                   )}
                 >
-                  Dashboard
+                  Sign In
                 </Link>
               )}
             </div>
@@ -57,29 +97,6 @@ export function Nav() {
               <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
               <span className="sr-only">Toggle theme</span>
             </Button>
-            {session ? (
-              <div className="flex items-center space-x-4">
-                <Link href="/profile">
-                  <div className="flex items-center space-x-2">
-                    {session.user.image && (
-                      <img
-                        src={session.user.image}
-                        alt={session.user.name || ""}
-                        className="h-8 w-8 rounded-full"
-                      />
-                    )}
-                    <span className="text-sm font-medium">
-                      {session.user.name}
-                    </span>
-                  </div>
-                </Link>
-                <Button variant="ghost" onClick={() => signOut()}>
-                  Sign Out
-                </Button>
-              </div>
-            ) : (
-              <Button onClick={() => signIn()}>Sign In</Button>
-            )}
           </div>
         </div>
       </div>

@@ -3,6 +3,8 @@ import { NextAuthOptions } from "next-auth"
 import { Adapter } from "next-auth/adapters"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 
 import { prisma } from "@/lib/prisma"
 import { Role } from "@prisma/client"
@@ -60,4 +62,26 @@ export const authOptions: NextAuthOptions = {
       }
     },
   },
+}
+
+export const createClient = () => {
+  const cookieStore = cookies()
+
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value
+        },
+        set(name: string, value: string, options: any) {
+          cookieStore.set({ name, value, ...options })
+        },
+        remove(name: string, options: any) {
+          cookieStore.set({ name, value: '', ...options })
+        },
+      },
+    }
+  )
 } 

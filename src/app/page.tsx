@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from 'next/link'
 import { Metadata } from "next"
 
 import { prisma } from "@/lib/prisma"
@@ -36,64 +36,31 @@ async function getLatestPosts() {
   return posts
 }
 
-export default async function HomePage() {
-  const posts = await getLatestPosts()
-
+export default function Home() {
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="mb-8 text-4xl font-bold">Latest Posts</h1>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {posts.map((post) => (
-          <article
-            key={post.id}
-            className="rounded-lg border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
-          >
-            {post.featuredImage && (
-              <img
-                src={post.featuredImage}
-                alt={post.title}
-                className="mb-4 h-48 w-full rounded-md object-cover"
-              />
-            )}
-            <h2 className="mb-2 text-2xl font-semibold">
-              <Link
-                href={`/posts/${post.slug}`}
-                className="hover:text-primary transition-colors"
-              >
-                {post.title}
-              </Link>
-            </h2>
-            {post.excerpt && (
-              <p className="mb-4 text-muted-foreground">{post.excerpt}</p>
-            )}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                {post.author.image && (
-                  <img
-                    src={post.author.image}
-                    alt={post.author.name || "Author"}
-                    className="h-8 w-8 rounded-full"
-                  />
-                )}
-                <span className="text-sm text-muted-foreground">
-                  {post.author.name}
-                </span>
-              </div>
-              <div className="flex space-x-2">
-                {post.categories.map((category) => (
-                  <Link
-                    key={category.slug}
-                    href={`/categories/${category.slug}`}
-                    className="text-sm text-muted-foreground hover:text-primary"
-                  >
-                    {category.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-    </main>
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+        <div className="flex flex-col gap-4 items-center sm:items-start">
+          <h1 className="text-4xl font-bold">Welcome to Our Blog</h1>
+          <p className="text-xl text-gray-600 dark:text-gray-400">
+            Share your thoughts and ideas with the world.
+          </p>
+          <div className="flex gap-4">
+            <Link
+              href="/posts"
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+            >
+              View Posts
+            </Link>
+            <Link
+              href="/posts/new"
+              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+            >
+              Create Post
+            </Link>
+          </div>
+        </div>
+      </main>
+    </div>
   )
 } 
